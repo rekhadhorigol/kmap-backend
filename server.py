@@ -1056,6 +1056,28 @@ async def minimize_kmap(request: MinimizeRequest):
             "optimization_level": "High (bitwise operations, advanced column covering)"
         }
 
+
+        # ---- LOG PERFORMANCE METRICS (FOR RENDER LOGS) ----
+        logger.info("===== QM PERFORMANCE METRICS =====")
+        logger.info(f"Variables           : {request.num_vars}")
+        logger.info(f"Minterms            : {len(minterms)}")
+        logger.info(f"Dont Cares          : {len(request.dont_cares)}")
+        logger.info(f"Prime Implicants    : {len(prime_implicants)}")
+        logger.info(f"Selected PIs        : {len(selected_pis)}")
+        logger.info(f"Total Time (ms)     : {performance_metrics['total_time_ms']}")
+        logger.info("Stage-wise timings (ms):")
+
+
+for stage, t in performance_metrics["timings"].items():
+    logger.info(f"  {stage:<25} : {t}")
+
+logger.info("===================================")
+
+
+
+
+        
+
         return MinimizeResponse(
             truth_table=truth_table,
             prime_implicants=pi_list,
