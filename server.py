@@ -11,6 +11,7 @@ import uuid
 from datetime import datetime, timezone
 import re
 from itertools import combinations, product
+import time
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -579,8 +580,18 @@ async def minimize_kmap(request: MinimizeRequest):
         
         # Run Quine-McCluskey for SOP
         qm = QuineMcCluskey(request.num_vars, minterms, request.dont_cares)
+        start_time = time.perf_counter()
         minimal_sop, prime_implicants, essential_pis, selected_pis = qm.minimize(var_names)
-        
+        end_time = time.perf_counter()
+        execution_time_ms = (end_time - start_time) * 1000
+        logger.info(
+            f"[PERF] Vars={request.num_vars}, "
+            f"Mode={request.input_mode}, "
+            f"Minterms={minterms}, "
+            f"DontCares={request.dont_cares}, "
+            f"QM_Time={execution_time_ms:.3f} ms"
+        )
+
         # Generate canonical forms
         canonical_sop = generate_canonical_sop(minterms, request.num_vars, var_names)
         canonical_pos = generate_canonical_pos(maxterms, request.num_vars, var_names)
