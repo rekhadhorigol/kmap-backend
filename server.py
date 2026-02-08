@@ -1066,16 +1066,9 @@ async def minimize_kmap(request: MinimizeRequest):
         logger.info(f"Selected PIs        : {len(selected_pis)}")
         logger.info(f"Total Time (ms)     : {performance_metrics['total_time_ms']}")
         logger.info("Stage-wise timings (ms):")
-
-
-for stage, t in performance_metrics["timings"].items():
-    logger.info(f"  {stage:<25} : {t}")
-
-logger.info("===================================")
-
-
-
-
+        for stage, t in performance_metrics["timings"].items():
+            logger.info(f"  {stage:<25} : {t}")
+        logger.info("===================================")
         
 
         return MinimizeResponse(
